@@ -1,5 +1,6 @@
 
 var assert = require('assert');
+var fs = require('fs');
 var collect = require('../index.js');
 
 describe('collect', function(){
@@ -7,9 +8,25 @@ describe('collect', function(){
     it('fetch content', function(done){
         collect.src('http://www.baidu.com')
             .use(function(data){
-                assert.notEqual(data, "");
+                assert.ok(data);
                 done();
             })
+    })
+
+    it('dest file', function(done){
+        var file = 'body.txt';
+
+        if (fs.existsSync(file)) {
+            fs.unlinkSync(file);
+        }
+
+        collect.src('http://www.baidu.com')
+            .dest(file);
+
+        fs.exists(file, function(exist){
+            assert.ok(exist);
+            done();
+        })
     })
 
 })
@@ -24,7 +41,7 @@ describe('collect.query', function(){
                 attr: 'src'
             }))
             .use(function(data){
-                assert.notEqual(data.src, '');
+                assert.ok(data.src);
                 done();
             })
     })

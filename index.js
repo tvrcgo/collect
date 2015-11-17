@@ -18,8 +18,8 @@ function Collect() {
 
 /**
  * 继承 Transform
- * @param {[type]} Collect.prototype   [description]
- * @param {[type]} Transform.prototype [description]
+ * @param {Object} Collect.prototype
+ * @param {Object} Transform.prototype
  */
 Object.setPrototypeOf(Collect.prototype, Transform.prototype);
 
@@ -45,7 +45,7 @@ Collect.prototype._flush = function(done){
 /**
  * 中间件
  * @param  {function} mw 中间件函数
- * @return {[type]}    Collect实例
+ * @return {stream}    Collect实例
  */
 Collect.prototype.use = function(mw){
     this._middleware.push(mw);
@@ -54,10 +54,10 @@ Collect.prototype.use = function(mw){
 
 /**
  * 处理结果保存到文件
- * @param  {[type]} filename [description]
- * @return {[type]}          [description]
+ * @param  {String} filename
  */
 Collect.prototype.dest = function(filename, opts) {
+    opts = opts || {};
     var dest = fs.createWriteStream(filename, {
         flags: opts.flags || 'a',
         encoding: opts.encoding || 'utf-8'
@@ -67,22 +67,34 @@ Collect.prototype.dest = function(filename, opts) {
 
 /**
  * 获取源数据
- * @param  {[type]} url  [description]
- * @param  {[type]} opts [description]
- * @return {[type]}      [description]
+ * @param  {String} url
+ * @param  {Object} opts
+ * @return {stream} Transform stream.
  */
 Collect.src = function(url, opts){
+    // Options.
     opts = opts || {};
+    // Collect instance
     var co = Collect();
+    // Default user-agent
     var UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.85 Safari/537.36';
-    return request({
+    // Request params
+    var params = {
         url: url,
         headers: {
             'User-Agent': opts.userAgent || UA
         },
         proxy: opts.proxy || '',
         gzip: true
-    }).pipe(co);
+    };
+    // Set cookie
+    if (opts.cookie) {
+        var j = request.jar();
+        var cookie = request.cookie(opts.cookie);
+        j.setCookie(cookie, url);
+        params.jar = j;
+    }
+    return request(params).pipe(co);
 }
 
 Collect.query = require('./lib/query');

@@ -5,6 +5,8 @@ var collect = require('../index.js');
 
 describe('collect', function(){
 
+    this.timeout(1000*20);
+
     it('fetch content', function(done){
         collect.src('http://www.baidu.com')
             .use(function(data){
@@ -32,6 +34,8 @@ describe('collect', function(){
 })
 
 describe('collect.query', function(){
+
+    this.timeout(1000*20);
 
     it('select element', function(done){
 

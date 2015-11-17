@@ -1,0 +1,29 @@
+{
+  "name": "collect",
+  "version": "1.0.0",
+  "description": "Data collect.",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "mocha test/test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tvrcgo/collect.git"
+  },
+  "keywords": [
+    "collect"
+  ],
+  "author": "tvrcgo",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tvrcgo/collect/issues"
+  },
+  "homepage": "https://github.com/tvrcgo/collect#readme",
+  "dependencies": {
+    "cheerio": "^0.19.0",
+    "request": "^2.65.0"
+  }
+}

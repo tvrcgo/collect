@@ -43,5 +43,23 @@ collect.src('http://example.com')
     .pipe(stream);
 ```
 
+#### collect.query
+按DOM选择器规则采集数据
+```js
+collect.src('http://www.houzz.com/photos')
+    .use(collect.query({
+        select: '.rightSideContent .content-row',
+        each: {
+            select: '.imageArea img',
+            attr: 'src'
+        }
+    }))
+    .use(function(data){
+        assert.equal(data.length, 9);
+        done();
+    })
+
+```
+
 ## License
 MIT

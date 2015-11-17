@@ -4,10 +4,35 @@ var collect = require('../index.js');
 
 describe('collect', function(){
 
+    it('fetch content', function(done){
+        collect.src('http://www.baidu.com')
+            .use(function(data){
+                assert.notEqual(data, "");
+                done();
+            })
+    })
+
+})
+
+describe('collect.query', function(){
+
+    it('select element', function(done){
+
+        collect.src('http://www.baidu.com')
+            .use(collect.query({
+                select: '#lg img',
+                attr: 'src'
+            }))
+            .use(function(data){
+                assert.notEqual(data.src, '');
+                done();
+            })
+    })
+
     it('each: select', function(done){
 
         collect.src('http://www.houzz.com/photos')
-            .use(collect.rule({
+            .use(collect.query({
                 select: '.rightSideContent .content-row',
                 each: {
                     select: '.imageArea img',
@@ -24,7 +49,7 @@ describe('collect', function(){
     it('each: multi selects', function(done){
 
         collect.src('http://movie.douban.com/later/guangzhou/')
-            .use(collect.rule({
+            .use(collect.query({
                 select: '#showing-soon .item',
                 each: [
                     {

@@ -85,6 +85,6 @@ Collect.src = function(url, opts){
     }).pipe(co);
 }
 
-Collect.rule = require('./lib/rule');
+Collect.query = require('./lib/query');
 
 module.exports = Collect;

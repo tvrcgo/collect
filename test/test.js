@@ -1,16 +1,16 @@
 
-var assert = require('assert');
+var expect = require('chai').expect;
 var fs = require('fs');
 var collect = require('../index.js');
 
 describe('collect', function(){
 
-    this.timeout(1000*20);
+    this.timeout(1000*5);
 
     it('fetch content', function(done){
         collect.src('http://www.baidu.com')
             .use(function(data){
-                assert.ok(data);
+                expect(data).to.be.ok;
                 done();
             })
     })
@@ -26,7 +26,7 @@ describe('collect', function(){
             .dest(file);
 
         fs.exists(file, function(exist){
-            assert.ok(exist);
+            expect(exist).to.be.ok;
             done();
         })
     })
@@ -45,7 +45,7 @@ describe('collect.query', function(){
                 attr: 'src'
             }))
             .use(function(data){
-                assert.ok(data.src);
+                expect(data).to.have.property('src');
                 done();
             })
     })
@@ -61,7 +61,7 @@ describe('collect.query', function(){
                 }
             }))
             .use(function(data){
-                assert.equal(data.length, 9);
+                expect(data).to.have.length.above(5);
                 done();
             })
 
@@ -85,7 +85,7 @@ describe('collect.query', function(){
                 ]
             }))
             .use(function(data){
-                assert.equal(data.length, 20);
+                expect(data).to.have.length.above(5);
                 done();
             })
     })

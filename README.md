@@ -13,22 +13,22 @@ npm i tvrcgo/collect
 var collect = require('collect');
 
 collect.src('http://example.com')
-    .use(function(data){
-        // process data
-        return data2
+    .use(function(data, next){
+        // process data -> data2
+        next(data2);
     })
-    .use(function(data2){
-        // process data2
-        return data3;
+    .use(function(data2, next){
+        // process data2 -> data3
+        next(data3);
     })
 ```
 
 将处理后的数据输出到文件
 ```js
 collect.src('http://example.com')
-    .use(function(data){
+    .use(function(data, next){
         // process data
-        return data;
+        next(data);
     })
     .dest('body.csv');
 ```
@@ -36,9 +36,9 @@ collect.src('http://example.com')
 输出到其它流
 ```js
 collect.src('http://example.com')
-    .use(function(data){
+    .use(function(data, next){
         // process data
-        return data;
+        next(data);
     })
     .pipe(stream);
 ```
@@ -54,9 +54,8 @@ collect.src('http://www.houzz.com/photos')
             attr: 'src'
         }
     }))
-    .use(function(data){
-        assert.equal(data.length, 9);
-        done();
+    .use(function(data, next){
+
     })
 
 ```

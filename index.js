@@ -31,14 +31,21 @@ Collect.prototype._transform = function(chunk, encoding, done){
 Collect.prototype._flush = function(done){
     // parse body
     var body = this._data.toString();
-    // middlewares process
-    if (this._middleware && this._middleware.length) {
-        for(var mw of this._middleware) {
-            body = mw.call(this, body);
-        }
-    }
-    // pipe stream
-    this.push(body);
+    // process middlewares
+    var next = function(idx){
+        idx = idx || 0;
+        return function(data){
+            if (idx < this._middleware.length) {
+                this._middleware[idx].call(this, data, next(++idx))
+            }
+            else {
+                this.push(data);
+            }
+        }.bind(this);
+    }.bind(this);
+    // start process.
+    next.call(this).call(this, body);
+
     done();
 }
 

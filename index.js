@@ -55,7 +55,12 @@ Collect.prototype._flush = function(done){
  * @return {stream}    Collect实例
  */
 Collect.prototype.use = function(mw){
-    this._middleware.push(mw);
+    if (typeof mw == 'function') {
+        this._middleware.push(mw);
+    }
+    if (mw instanceof this.constructor) {
+        this._middleware = this._middleware.concat(mw._middleware);
+    }
     return this;
 }
 

@@ -5,7 +5,7 @@ var collect = require('../index.js');
 
 describe('collect', function(){
 
-    this.timeout(1000*5);
+    this.timeout(1000*20);
 
     it('fetch content', function(done){
         collect.src('http://www.baidu.com')
@@ -13,6 +13,22 @@ describe('collect', function(){
                 expect(data).to.be.ok;
                 done();
             })
+    })
+
+    it('use other collect\'s middlewares', function(done){
+        var c1 = collect();
+
+        c1.use(function(data, next){
+            next('hello');
+        });
+
+        collect.src('http://www.baidu.com')
+            .use(c1)
+            .use(function(data, next){
+                expect(data).to.be.equal('hello');
+                done();
+            })
+
     })
 
     it('dest file', function(done){
@@ -62,6 +78,7 @@ describe('collect.query', function(){
             }))
             .use(function(data){
                 expect(data).to.have.length.above(5);
+                expect(data[0]).to.have.property('src');
                 done();
             })
 
@@ -86,6 +103,9 @@ describe('collect.query', function(){
             }))
             .use(function(data){
                 expect(data).to.have.length.above(5);
+                expect(data[0]).to.have.length(2);
+                expect(data[0][0]).to.include.all.keys("text", "href");
+                expect(data[0][1]).to.have.property("src");
                 done();
             })
     })

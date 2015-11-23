@@ -15,7 +15,24 @@ describe('collect', function(){
             })
     })
 
+    it('Use other collect\'s middlewares', function(done){
+        var c1 = collect();
+
+        c1.use(function(data, next){
+            next('hello');
+        });
+
+        collect.src('http://www.baidu.com')
+            .use(c1)
+            .use(function(data, next){
+                expect(data).to.be.equal('hello');
+                done();
+            })
+
+    })
+
     it('Dest file', function(done){
+
         var file = 'body.txt';
 
         if (fs.existsSync(file)) {
@@ -79,6 +96,7 @@ describe('collect.query', function(){
             }))
             .use(function(data){
                 expect(data).to.have.length.above(5);
+                expect(data[0]).to.have.property('src');
                 done();
             })
 
@@ -103,6 +121,9 @@ describe('collect.query', function(){
             }))
             .use(function(data){
                 expect(data).to.have.length.above(5);
+                expect(data[0]).to.have.length(2);
+                expect(data[0][0]).to.include.all.keys("text", "href");
+                expect(data[0][1]).to.have.property("src");
                 done();
             })
     })

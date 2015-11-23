@@ -58,7 +58,6 @@ describe('collect', function(){
                 }
             }))
             .use(function(data, next){
-                console.log(data.length)
                 expect(data).to.have.length.above(120);
                 expect(data[0]).to.have.property('id');
                 done();

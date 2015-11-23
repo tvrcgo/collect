@@ -43,6 +43,19 @@ collect.src('http://example.com')
     .pipe(stream);
 ```
 
+采集页面包含 ajax
+```js
+collect.src('http://example.com', {
+        javascript: true,
+        delay: 1000*5
+    })
+    .use(function(data, next){
+        // process data
+    })
+```
+- `javascript` 设为 true 允许页面执行JS
+- `delay` 页面所有请求完成后，在 delay 的时间内再无请求发出，认为 ajax 加载已经完成
+
 #### collect.query
 按DOM选择器规则采集数据
 ```js

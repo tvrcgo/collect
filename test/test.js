@@ -5,9 +5,9 @@ var collect = require('../index.js');
 
 describe('collect', function(){
 
-    this.timeout(1000*5);
+    this.timeout(1000*20);
 
-    it('fetch content', function(done){
+    it('Fetch content', function(done){
         collect.src('http://www.baidu.com')
             .use(function(data){
                 expect(data).to.be.ok;
@@ -15,7 +15,7 @@ describe('collect', function(){
             })
     })
 
-    it('dest file', function(done){
+    it('Dest file', function(done){
         var file = 'body.txt';
 
         if (fs.existsSync(file)) {
@@ -31,13 +31,30 @@ describe('collect', function(){
         })
     })
 
+    it('Fetch ajax page', function(done){
+        this.timeout(30000);
+        collect.src('http://www.cnbeta.com', { javascript: true, delay: 1000*5 })
+            .use(collect.query({
+                select: ".items_area .item",
+                each: {
+                    attr: 'id'
+                }
+            }))
+            .use(function(data, next){
+                console.log(data.length)
+                expect(data).to.have.length.above(120);
+                expect(data[0]).to.have.property('id');
+                done();
+            })
+    })
+
 })
 
 describe('collect.query', function(){
 
     this.timeout(1000*20);
 
-    it('select element', function(done){
+    it('Select element', function(done){
 
         collect.src('http://www.baidu.com')
             .use(collect.query({
@@ -50,7 +67,7 @@ describe('collect.query', function(){
             })
     })
 
-    it('each: select', function(done){
+    it('Each: select', function(done){
 
         collect.src('http://www.houzz.com/photos')
             .use(collect.query({
@@ -67,7 +84,7 @@ describe('collect.query', function(){
 
     })
 
-    it('each: multi selects', function(done){
+    it('Each: multi selects', function(done){
 
         collect.src('http://movie.douban.com/later/guangzhou/')
             .use(collect.query({

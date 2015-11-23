@@ -3,6 +3,8 @@
 var Transform = require('stream').Transform;
 var request = require('request');
 var fs = require('fs');
+var phantomjs = require('phantomjs');
+var proc = require('child_process');
 
 /**
  * Collect
@@ -83,6 +85,12 @@ Collect.src = function(url, opts){
     opts = opts || {};
     // Collect instance
     var co = Collect();
+    // Fetch page content with ajax.
+    if (opts.javascript) {
+        var delay = opts.delay;
+        var child = proc.spawn(phantomjs.path, [ __dirname + "/lib/asrc.js", url, delay ]);
+        return child.stdout.pipe(co);
+    }
     // Default user-agent
     var UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.85 Safari/537.36';
     // Request params

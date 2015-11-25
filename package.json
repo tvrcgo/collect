@@ -1,7 +1,7 @@
 {
   "name": "collect",
-  "version": "1.0.0",
-  "description": "Data collect.",
+  "version": "1.1.0",
+  "description": "Collect data.",
   "main": "index.js",
   "directories": {
     "test": "test"

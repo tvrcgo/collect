@@ -43,6 +43,18 @@ collect.src('http://example.com')
     .pipe(stream);
 ```
 
+指定 User-Agent 和代理
+```js
+collect.src('http://example.com', {
+    userAgent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.85 Safari/537.36",
+    proxy: "http://191.26.14.23:8000"
+})
+    .use(function(data, next){
+        // process data
+        next(data);
+    })
+```
+
 采集页面包含 ajax
 ```js
 collect.src('http://example.com', {
@@ -54,7 +66,7 @@ collect.src('http://example.com', {
     })
 ```
 - `javascript` 设为 true 允许页面执行JS
-- `delay` 页面所有请求完成后，在 delay 的时间内再无请求发出，认为 ajax 加载已经完成
+- `delay` 页面最后一次发出或收到请求后，在 delay 时间内再无动作，认为 ajax 加载已经完成
 
 #### collect.query
 按DOM选择器规则采集数据

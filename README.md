@@ -46,7 +46,7 @@ collect.src('http://example.com')
 指定 User-Agent 和代理
 ```js
 collect.src('http://example.com', {
-    userAgent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.85 Safari/537.36",
+    userAgent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 ...",
     proxy: "http://191.26.14.23:8000"
 })
     .use(function(data, next){

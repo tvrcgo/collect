@@ -126,4 +126,20 @@ describe('collect.query', function(){
                 done();
             })
     })
+
+    it('Catch: error handler', function(done){
+
+        collect.src('http://www.baidu.com')
+            .use(function(data, next){
+                next(new Error('error msg'));
+            })
+            .use(function(data, next){
+                expect(data).to.not.be.ok;
+                next();
+            })
+            .catch(function(err, next){
+                expect(err).to.be.an.instanceof(Error);
+                done();
+            })
+    })
 })

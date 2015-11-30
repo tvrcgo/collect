@@ -37,11 +37,31 @@ Collect.prototype._flush = function(done){
     var next = function(idx){
         idx = idx || 0;
         return function(data){
+            while(this._middleware[idx]) {
+                if (data instanceof Error) {
+                    if (this._middleware[idx].type!=="catch") {
+                        idx++;
+                        continue;
+                    }
+                }
+                else {
+                    if (this._middleware[idx].type!=='mw') {
+                        idx++;
+                        continue;
+                    }
+                }
+                break;
+            }
             if (idx < this._middleware.length) {
-                this._middleware[idx].call(this, data, next(++idx))
+                this._middleware[idx].fn.call(this, data, next(++idx))
             }
             else {
-                this.push(data);
+                if (data instanceof String || data instanceof Buffer) {
+                    this.push(data);
+                }
+                else {
+                    this.push(body);
+                }
             }
         }.bind(this);
     }.bind(this);
@@ -58,10 +78,22 @@ Collect.prototype._flush = function(done){
  */
 Collect.prototype.use = function(mw){
     if (typeof mw == 'function') {
-        this._middleware.push(mw);
+        this._middleware.push({ type:'mw', fn:mw });
     }
     if (mw instanceof this.constructor) {
         this._middleware = this._middleware.concat(mw._middleware);
+    }
+    return this;
+}
+
+/**
+ * 异常处理
+ * @param  {function} mw
+ * @return {object}  当前Collect实例
+ */
+Collect.prototype.catch = function(mw){
+    if (typeof mw == 'function') {
+        this._middleware.push({ type:'catch', fn:mw });
     }
     return this;
 }

@@ -45,12 +45,13 @@ describe('collect', function(){
         fs.exists(file, function(exist){
             expect(exist).to.be.ok;
             done();
+            fs.unlinkSync(file);
         })
     })
 
     it('Fetch ajax page', function(done){
-        this.timeout(30000);
-        collect.src('http://www.cnbeta.com', { javascript: true, delay: 1000*5 })
+        this.timeout(20000);
+        collect.src('http://www.cnbeta.com', { javascript: true, delay: 1000*5, timeout: 15000 })
             .use(collect.query({
                 select: ".items_area .item",
                 each: {
@@ -71,7 +72,7 @@ describe('collect', function(){
                 throw new Error('error msg');
             })
             .use(function(data, next){
-                next();
+                // skip this process
             })
             .catch(function(err, next){
                 expect(err).to.be.an.instanceof(Error);

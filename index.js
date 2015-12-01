@@ -129,8 +129,19 @@ Collect.src = function(url, opts){
     var co = Collect();
     // Fetch page content with ajax.
     if (opts.javascript) {
-        var delay = opts.delay;
-        var child = proc.spawn(phantomjs.path, [ __dirname + "/lib/asrc.js", url, delay ]);
+        var delay = opts.delay || 5000;
+        var timeout = opts.timeout || 15*1000;
+        var child = proc.spawn(phantomjs.path, [ __dirname + "/lib/asrc.js", url, delay, timeout ]);
+        // filter phantom_echo content
+        co.use(function(data, next){
+            if (data) {
+                data = data.split('PHANTOM_ECHO')[1];
+                next(data);
+            }
+            else {
+                next("");
+            }
+        })
         return child.stdout.pipe(co);
     }
     // Default user-agent
@@ -142,7 +153,8 @@ Collect.src = function(url, opts){
             'User-Agent': opts.userAgent || UA
         },
         proxy: opts.proxy || '',
-        gzip: true
+        gzip: true,
+        timeout: opts.timeout || 15*1000
     };
     // Set cookie
     if (opts.cookie) {

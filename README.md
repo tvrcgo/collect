@@ -68,6 +68,21 @@ collect.src('http://example.com', {
 - `javascript` 设为 true 允许页面执行JS
 - `delay` 页面最后一次发出或收到请求后，在 delay 时间内再无动作，认为 ajax 加载已经完成
 
+异常处理
+```js
+collect.src('http://example.com')
+    .use(function(data, next){
+        throw new Error('error');
+    })
+    .catch(function(err, next){
+        // process err
+        next();
+    })
+    .use(function(data, next){
+        
+    })
+```
+
 #### collect.query
 按DOM选择器规则采集数据
 ```js

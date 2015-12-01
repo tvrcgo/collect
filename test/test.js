@@ -64,6 +64,26 @@ describe('collect', function(){
             })
     })
 
+    it('Catch: error handler', function(done){
+
+        collect.src('http://www.baidu.com')
+            .use(function(data, next){
+                throw new Error('error msg');
+            })
+            .use(function(data, next){
+                next();
+            })
+            .catch(function(err, next){
+                expect(err).to.be.an.instanceof(Error);
+                expect(err.message).to.be.equal('error msg');
+                next('catched');
+            })
+            .use(function(data, next){
+                expect(data).to.be.equal('catched');
+                done();
+            })
+    })
+
 })
 
 describe('collect.query', function(){
@@ -127,19 +147,4 @@ describe('collect.query', function(){
             })
     })
 
-    it('Catch: error handler', function(done){
-
-        collect.src('http://www.baidu.com')
-            .use(function(data, next){
-                next(new Error('error msg'));
-            })
-            .use(function(data, next){
-                expect(data).to.not.be.ok;
-                next();
-            })
-            .catch(function(err, next){
-                expect(err).to.be.an.instanceof(Error);
-                done();
-            })
-    })
 })

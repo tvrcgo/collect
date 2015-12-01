@@ -53,7 +53,12 @@ Collect.prototype._flush = function(done){
                 break;
             }
             if (idx < this._middleware.length) {
-                this._middleware[idx].fn.call(this, data, next(++idx))
+                try {
+                    this._middleware[idx].fn.call(this, data, next(++idx))
+                }
+                catch(err) {
+                    next(idx).call(this, err);
+                }
             }
             else {
                 if (data instanceof String || data instanceof Buffer) {

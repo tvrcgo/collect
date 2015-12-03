@@ -61,12 +61,7 @@ Collect.prototype._flush = function(done){
                 }
             }
             else {
-                if (data instanceof String || data instanceof Buffer) {
-                    this.push(data);
-                }
-                else {
-                    this.push(body);
-                }
+                this.push(data);
             }
         }.bind(this);
     }.bind(this);
@@ -129,8 +124,8 @@ Collect.src = function(url, opts){
     var co = Collect();
     // Fetch page content with ajax.
     if (opts.javascript) {
-        var delay = opts.delay || 5000;
-        var timeout = opts.timeout || 15*1000;
+        var delay = opts.delay || 3000;
+        var timeout = opts.timeout || 10*1000;
         var child = proc.spawn(phantomjs.path, [ __dirname + "/lib/asrc.js", url, delay, timeout ]);
         // filter phantom_echo content
         co.use(function(data, next){
@@ -139,7 +134,7 @@ Collect.src = function(url, opts){
                 next(data);
             }
             else {
-                next("");
+                throw new Error('src no data.');
             }
         })
         return child.stdout.pipe(co);
@@ -154,7 +149,7 @@ Collect.src = function(url, opts){
         },
         proxy: opts.proxy || '',
         gzip: true,
-        timeout: opts.timeout || 15*1000
+        timeout: opts.timeout || 10*1000
     };
     // Set cookie
     if (opts.cookie) {

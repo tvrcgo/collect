@@ -51,7 +51,7 @@ describe('collect', function(){
 
     it('Fetch ajax page', function(done){
         this.timeout(20000);
-        collect.src('http://www.cnbeta.com', { javascript: true, delay: 1000*5, timeout: 15000 })
+        collect.src('http://www.cnbeta.com', { javascript: true, delay: 1000*3, timeout: 15000 })
             .use(collect.query({
                 select: ".items_area .item",
                 each: {
@@ -59,7 +59,7 @@ describe('collect', function(){
                 }
             }))
             .use(function(data, next){
-                expect(data).to.have.length.above(120);
+                expect(data).to.have.length.above(100);
                 expect(data[0]).to.have.property('id');
                 done();
             })

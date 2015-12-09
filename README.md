@@ -70,24 +70,6 @@ collect.src('http://example.com', {
 - `delay` 页面最后一次发出或收到请求后，在 delay 时间内再无动作，认为 ajax 加载已经完成
 - `timeout` 页面加载超时
 
-异常处理
-```js
-collect.src('http://example.com')
-    .use(function(data, next){
-        throw new Error('error');
-    })
-    .use(function(data, next){
-        // skip this process
-    })
-    .catch(function(err, next){
-        // process err
-        next();
-    })
-    .use(function(data, next){
-
-    })
-```
-
 ### collect.query
 按DOM选择器规则采集数据
 ```js

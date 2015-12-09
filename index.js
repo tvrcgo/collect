@@ -29,19 +29,29 @@ function Collect(filter, reject) {
             done();
         }
         else {
-            filter.call(this, chunk, function(obj){
-                done(null, obj);
-            })
+            try {
+                filter.call(this, chunk, function(obj){
+                    done(null, obj);
+                })
+            }
+            catch(err) {
+                reject && reject(err);
+            }
         }
     };
 
     // inherits _flush
     this._flush = function(done){
         if (this._data.length) {
-            filter.call(this, { content:this._data.toString() }, function(obj){
-                this.push(obj);
-                done();
-            }.bind(this));
+            try {
+                filter.call(this, { content:this._data.toString() }, function(obj){
+                    this.push(obj);
+                    done();
+                }.bind(this));
+            }
+            catch(err) {
+                reject && reject(err);
+            }
         }
         else {
             done();

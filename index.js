@@ -9,27 +9,43 @@ var proc = require('child_process');
 /**
  * Collect
  */
-function Collect(transform, flush) {
+function Collect(filter, reject) {
+    // new instance
     if( !(this instanceof Collect)) {
-        return new Collect(transform, flush);
+        return new Collect(filter);
     }
+    // buffer
     this._data = [];
+
+    // default filter
+    filter = filter || function(chunk, next){
+        next(chunk);
+    };
+
     // inherits _transform
-    this._transform = transform || function(chunk, enc, done) {
+    this._transform = function(chunk, enc, done) {
         if (chunk instanceof Buffer) {
             this._data.push(chunk);
+            done();
         }
         else {
-            this.push(chunk);
+            filter.call(this, chunk, function(obj){
+                done(null, obj);
+            })
         }
-        done();
     };
+
     // inherits _flush
-    this._flush = flush || function(done){
+    this._flush = function(done){
         if (this._data.length) {
-            this.push({ content:this._data.toString() });
+            filter.call(this, { content:this._data.toString() }, function(obj){
+                this.push(obj);
+                done();
+            }.bind(this));
         }
-        done();
+        else {
+            done();
+        }
     };
 
     Transform.call(this, { objectMode:true });
@@ -37,8 +53,6 @@ function Collect(transform, flush) {
 
 /**
  * 继承 Transform
- * @param {Object} Collect.prototype
- * @param {Object} Transform.prototype
  */
 Object.setPrototypeOf(Collect.prototype, Transform.prototype);
 
@@ -48,22 +62,10 @@ Object.setPrototypeOf(Collect.prototype, Transform.prototype);
  * @return {stream}    Collect实例
  */
 Collect.prototype.use = function(mw){
-    if (mw instanceof Collect) {
-        return this.pipe(mw);
-    }
-
     if (typeof mw === 'function') {
-        return this.pipe(Collect(function(obj, enc, callback){
-            try {
-                mw.call(this, obj, function(tarObj){
-                    callback.call(this, null, tarObj);
-                });
-            }
-            catch(err) {
-                throw err;
-            }
-        }))
+        return this.pipe(Collect(mw));
     }
+    return this;
 }
 
 /**
@@ -81,8 +83,8 @@ Collect.src = function(url, opts){
         var timeout = opts.timeout || 10*1000;
         var child = proc.spawn(phantomjs.path, [ __dirname + "/lib/asrc.js", url, delay, timeout ]);
         // filter phantom_echo content
-        return child.stdout.pipe(Collect().use(function(data, next){
-            if (data) {
+        return child.stdout.pipe(Collect(function(data, next){
+            if (data && data.content) {
                 data.content = data.content.split('PHANTOM_ECHO')[1];
                 next(data);
             }
@@ -123,7 +125,14 @@ Collect.prototype.dest = function(filename, opts) {
         flags: opts.flags || 'a',
         encoding: opts.encoding || 'utf-8'
     });
-    this.pipe(dest);
+    this.pipe(Collect(function(data, next){
+        if (data && data.content) {
+            next(data.content);
+        }
+        else if (data instanceof String || data instanceof Buffer) {
+            next(data);
+        }
+    })).pipe(dest);
 }
 
 Collect.query = require('./lib/query');

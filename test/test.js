@@ -15,22 +15,6 @@ describe('collect', function(){
             })
     })
 
-    it('Use other collect\'s middlewares', function(done){
-        var c1 = collect();
-
-        c1.use(function(data, next){
-            next('hello');
-        });
-
-        collect.src('http://www.baidu.com')
-            .use(c1)
-            .use(function(data, next){
-                expect(data).to.be.equal('hello');
-                done();
-            })
-
-    })
-
     it('Dest file', function(done){
 
         var file = 'body.txt';
@@ -65,31 +49,9 @@ describe('collect', function(){
             })
     })
 
-    it('Catch: error handler', function(done){
-
-        collect.src('http://www.baidu.com')
-            .use(function(data, next){
-                throw new Error('error msg');
-            })
-            .use(function(data, next){
-                // skip this process
-            })
-            .catch(function(err, next){
-                expect(err).to.be.an.instanceof(Error);
-                expect(err.message).to.be.equal('error msg');
-                next('catched');
-            })
-            .use(function(data, next){
-                expect(data).to.be.equal('catched');
-                done();
-            })
-    })
-
 })
 
 describe('collect.query', function(){
-
-    this.timeout(1000*20);
 
     it('Select element', function(done){
 

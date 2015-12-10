@@ -44,7 +44,7 @@ function Collect(filter, reject) {
     this._flush = function(done){
         if (this._data.length) {
             try {
-                filter.call(this, { content:this._data.toString() }, function(obj){
+                filter.call(this, { content: Buffer.concat(this._data).toString() }, function(obj){
                     this.push(obj);
                     done();
                 }.bind(this));

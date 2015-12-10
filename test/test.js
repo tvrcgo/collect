@@ -8,7 +8,7 @@ describe('collect', function(){
     this.timeout(1000*20);
 
     it('Fetch content', function(done){
-        collect.src('http://www.baidu.com')
+        collect.src('http://www.qq.com')
             .use(function(data){
                 expect(data).to.be.ok;
                 done();

@@ -8,7 +8,7 @@ npm i tvrcgo/collect
 
 ## Usage
 
-采集数据，中间件处理
+采集数据，流式处理
 ```js
 var collect = require('collect');
 

@@ -26,18 +26,18 @@ function Collect(filter, reject) {
     this._transform = function(chunk, enc, done) {
         if (chunk instanceof Buffer) {
             this._data.push(chunk);
-            done();
         }
         else {
             try {
                 filter.call(this, chunk, function(obj){
-                    done(null, obj);
-                })
+                    this.push(obj);
+                }.bind(this))
             }
             catch(err) {
                 reject && reject(err);
             }
         }
+        done();
     };
 
     // inherits _flush
@@ -51,6 +51,7 @@ function Collect(filter, reject) {
             }
             catch(err) {
                 reject && reject(err);
+                done();
             }
         }
         else {

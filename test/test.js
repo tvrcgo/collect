@@ -53,6 +53,8 @@ describe('collect', function(){
 
 describe('collect.query', function(){
 
+    this.timeout(5000);
+
     it('Select element', function(done){
 
         collect.src('http://www.baidu.com')

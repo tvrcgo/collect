@@ -8,7 +8,7 @@ describe('collect', function(){
     this.timeout(1000*20);
 
     it('Fetch content', function(done){
-        collect.src('http://www.baidu.com')
+        collect.src('http://www.qq.com')
             .use(function(data){
                 expect(data).to.be.ok;
                 done();
@@ -37,14 +37,11 @@ describe('collect', function(){
         this.timeout(20000);
         collect.src('http://www.cnbeta.com', { javascript: true, delay: 1000*3, timeout: 15000 })
             .use(collect.query({
-                select: ".items_area .item",
-                each: {
-                    attr: 'id'
-                }
+                ids: ".items_area .item@id"
             }))
             .use(function(data, next){
-                expect(data).to.have.length.above(100);
-                expect(data[0]).to.have.property('id');
+                expect(data.ids).to.have.length.above(100);
+                expect(data.ids[0]).to.be.ok;
                 done();
             })
     })
@@ -59,11 +56,10 @@ describe('collect.query', function(){
 
         collect.src('http://www.baidu.com')
             .use(collect.query({
-                select: '#lg img',
-                attr: 'src'
+                src: '#lg img@src'
             }))
             .use(function(data){
-                expect(data).to.have.property('src');
+                expect(data.src).to.be.ok;
                 done();
             })
     })
@@ -72,15 +68,11 @@ describe('collect.query', function(){
 
         collect.src('http://www.houzz.com/photos')
             .use(collect.query({
-                select: '.rightSideContent .content-row',
-                each: {
-                    select: '.imageArea img',
-                    attr: 'src'
-                }
+                imgs: '.rightSideContent .content-row .imageArea img@src',
             }))
             .use(function(data){
-                expect(data).to.have.length.above(5);
-                expect(data[0]).to.have.property('src');
+                expect(data.imgs).to.have.length.above(5);
+                expect(data.imgs[0]).to.be.ok;
                 done();
             })
 
@@ -90,24 +82,11 @@ describe('collect.query', function(){
 
         collect.src('http://movie.douban.com/later/guangzhou/')
             .use(collect.query({
-                select: '#showing-soon .item',
-                each: [
-                    {
-                        select: 'h3 a',
-                        value: 'text',
-                        attr: 'href'
-                    },
-                    {
-                        select: '.thumb img',
-                        attr: 'src'
-                    }
-                ]
+                movies: ['#showing-soon .item', 'h3 a, h3 a@href, .thumb img@src']
             }))
             .use(function(data){
-                expect(data).to.have.length.above(5);
-                expect(data[0]).to.have.length(2);
-                expect(data[0][0]).to.include.all.keys("text", "href");
-                expect(data[0][1]).to.have.property("src");
+                expect(data.movies).to.have.length.above(15);
+                expect(data.movies[0]).to.have.length(3);
                 done();
             })
     })

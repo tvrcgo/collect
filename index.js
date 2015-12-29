@@ -123,7 +123,9 @@ Collect.src = function(url, opts){
         j.setCookie(cookie, url);
         params.jar = j;
     }
-    return request(params).pipe(Collect());
+    return request(params).on('error', function(err){
+        console.error('[collect.src]', err);
+    }).pipe(Collect());
 }
 
 /**

@@ -87,6 +87,7 @@ describe('collect.query', function(){
             .use(function(data){
                 expect(data.movies).to.have.length.above(15);
                 expect(data.movies[0]).to.have.length(3);
+                expect(data.movies[0][0]).to.not.equal(data.movies[0][1]);
                 done();
             })
     })

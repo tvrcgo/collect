@@ -71,10 +71,10 @@ collect.src('http://example.com', {
 - `timeout` 页面加载超时
 
 ### collect.query
-按DOM选择器规则采集数据，支持索引值、属性、html
-- `[]` 索引, a[1]=a:nth-child(1)
-- `@` 属性, a@href=a.getAttribute('href')
-- `:html` HTML内容
+按DOM选择器规则采集数据，支持索引值、属性、html内容
+- `[]` 索引
+- `@` 属性
+- `:html` html内容
 
 ```js
 collect.src('http://www.houzz.com/photos')
@@ -82,12 +82,13 @@ collect.src('http://www.houzz.com/photos')
         li: '.rightSideContent .content-row[1]', // 单个
         imgs: '.rightSideContent .content-row .imageArea img@src', // N行一列
         cols: ['.rightSideContent .content-row', 'img@src, a@href, a'], // N行三列
-        source: '.rightSideContent li:html' // html内容
+        html: '.rightSideContent li:html' // html内容
     }))
     .use(function(data, next){
         // data.imgs
         // data.li
         // data.cols
+        // data.html
     })
 
 ```

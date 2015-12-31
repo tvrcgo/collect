@@ -150,4 +150,13 @@ Collect.prototype.dest = function(filename, opts) {
 
 Collect.query = require('./lib/query');
 
+/**
+* 选择元素
+* @param  {array} selectors
+* @return {object} collect object.
+*/
+Collect.prototype.query = function(selectors){
+    return this.use(Collect.query(selectors))
+};
+
 module.exports = Collect;

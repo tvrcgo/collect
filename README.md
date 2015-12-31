@@ -8,7 +8,8 @@ npm i tvrcgo/collect
 
 ## Usage
 
-采集数据，流式处理
+#### 采集数据
+流式处理，自由添加处理函数
 ```js
 var collect = require('collect');
 
@@ -24,7 +25,8 @@ collect.src('http://example.com')
     })
 ```
 
-选择元素，支持索引值、属性、html内容
+#### 选择元素
+支持索引值、属性、html内容，默认取标签text
 - `[]` 索引
 - `@` 属性
 - `:html` html内容
@@ -45,7 +47,7 @@ collect.src('http://example.com')
     })
 ```
 
-指定 User-Agent 和代理
+#### 指定 User-Agent 和代理
 ```js
 collect.src('http://example.com', {
     userAgent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 ...",
@@ -57,10 +59,11 @@ collect.src('http://example.com', {
 })
 ```
 
-采集 Ajax 页面内容
+#### 采集 Ajax 页面内容
 - `javascript` 为 true 允许页面执行JS
 - `delay` 页面最后一次发出或收到请求后，在 delay 时间内再无动作，认为 ajax 加载已经完成
 - `timeout` 页面加载超时
+
 ```js
 collect.src('http://example.com', {
         javascript: true,
@@ -72,6 +75,7 @@ collect.src('http://example.com', {
     })
 ```
 
+#### 输出
 将处理后的数据输出到文件
 ```js
 collect.src('http://example.com')
